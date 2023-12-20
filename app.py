@@ -6,20 +6,21 @@ if 'rows' not in st.session_state:
     st.session_state['rows'] = 2
 if 'cols' not in st.session_state:
     st.session_state['cols'] = 2
-
-input_mat = np.zeros((2, 2))
+if 'matrix' not in st.session_state:
+    st.session_state['matrix'] = np.zeros((2, 2))
 
 def update_matrix():
     matrix_container = st.container(border=True)
-    input_mat = matrix_container.data_editor(
+    st.session_state['matrix'] = matrix_container.data_editor(
         data=np.zeros((st.session_state['rows'], st.session_state['cols'])),
         use_container_width=True,
         hide_index=True,
     )
 
 st.write(
-    """Note: There's a bug at the moment - The composed PDF might include
-     data of previous composition. Should this happen, reload the site.""")
+    """BUG: The new composition includes data of previous compositions for some reason.
+     Will a cloud storage service fix this?"""
+)
 
 #
 row_input, col_input = st.columns(2)
@@ -50,7 +51,7 @@ update_matrix()
 decompose_button = st.button("Decompose Matrix")
 if decompose_button:
     # Streamlit's input is in ndarray
-    matrix = np.asmatrix(input_mat, dtype=np.float_)
+    matrix = np.asmatrix(st.session_state['matrix'], dtype=np.float_)
 
     with st.spinner('Please wait...'):
         write_pdf(matrix)
@@ -62,3 +63,4 @@ if decompose_button:
 
     del st.session_state['rows']
     del st.session_state['cols']
+    del st.session_state['matrix']
