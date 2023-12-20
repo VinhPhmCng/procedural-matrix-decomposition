@@ -62,4 +62,3 @@ if decompose_button:
 
     del st.session_state['rows']
     del st.session_state['cols']
-    del st.session_state['matrix']
