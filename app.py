@@ -6,12 +6,12 @@ if 'rows' not in st.session_state:
     st.session_state['rows'] = 2
 if 'cols' not in st.session_state:
     st.session_state['cols'] = 2
-if 'matrix' not in st.session_state:
-    st.session_state['matrix'] = np.zeros((2, 2))
 
-def create_matrix():
+input_mat = np.zeros((2, 2))
+
+def update_matrix():
     matrix_container = st.container(border=True)
-    st.session_state['matrix'] = matrix_container.data_editor(
+    input_mat = matrix_container.data_editor(
         data=np.zeros((st.session_state['rows'], st.session_state['cols'])),
         use_container_width=True,
         hide_index=True,
@@ -45,12 +45,12 @@ with col_input:
         label_visibility="visible",
     )
 
-create_matrix()
+update_matrix()
 
 decompose_button = st.button("Decompose Matrix")
 if decompose_button:
     # Streamlit's input is in ndarray
-    matrix = np.asmatrix(st.session_state['matrix'], dtype=np.float_)
+    matrix = np.asmatrix(input_mat, dtype=np.float_)
 
     with st.spinner('Please wait...'):
         write_pdf(matrix)
