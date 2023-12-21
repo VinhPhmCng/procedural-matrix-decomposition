@@ -19,9 +19,8 @@ def update_matrix():
 
 st.title('Procedural Matrix Decomposition')
 st.write(
-    """BUG: The new composition includes data of previous compositions for some reason.
-     Will a cloud storage service fix this?
-     - Incompatibility with _nicematrix_ - Disabling it does the trick."""
+    """Note: _nicematrix_ is incompatible here for some reason.
+    Note: This is a minimum viable product."""
 )
 st.write('Head to Github for more details.')
 st.divider()
