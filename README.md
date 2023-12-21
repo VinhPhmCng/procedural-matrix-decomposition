@@ -57,7 +57,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A minimum viable product that is part of the development process of [LAFD](https://github.com/VinhPhmCng/LAFD).
+A minimum viable product that is part of the development process of [LAFD](https://github.com/VinhPhmCng/LAFD)
 
 A Python program using Numpy and Pylatex to procedurally generate every step of a matrix decomposition process.
 
@@ -99,6 +99,7 @@ python /path/to/visual.py
 ```
 
 **To decompose a matrix of your choice**, simply modify the Numpy matrix called _matrix\_A_ located in the main function
+
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
 in [visual.py](/original/visual.py)
