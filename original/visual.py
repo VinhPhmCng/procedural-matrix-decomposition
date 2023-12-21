@@ -584,13 +584,14 @@ if __name__ == '__main__':
 
     #########################################
     # Set up LaTex Document 
-    doc = Document()
+    doc = Document(inputenc='utf8')
     doc.documentclass = Command(
         'documentclass',
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
         arguments=['standalone'],
     )
     doc.packages.append(Package('nicematrix'))
+    doc.packages.append(Package('babel', options=['vietnamese']))
 
     # Write answer
     with doc.create(Section('Answer')):
