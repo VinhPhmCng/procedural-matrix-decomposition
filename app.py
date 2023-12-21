@@ -19,8 +19,8 @@ def update_matrix():
 
 st.title('Procedural Matrix Decomposition')
 st.write(
-    """Note: _nicematrix_ is incompatible here for some reason.
-    Note: This is a minimum viable product."""
+    """**Note**: _nicematrix_ is incompatible here for some reason.\n
+    **Note**: This is a minimum viable product."""
 )
 st.write('Head to Github for more details.')
 st.divider()
