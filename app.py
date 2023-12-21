@@ -17,9 +17,11 @@ def update_matrix():
         hide_index=True,
     )
 
+st.title('Procedural Matrix Decomposition')
 st.write(
     """BUG: The new composition includes data of previous compositions for some reason.
-     Will a cloud storage service fix this?"""
+     Will a cloud storage service fix this?
+     - Incompatibility with _nicematrix_ - Disabling it does the trick."""
 )
 
 #
