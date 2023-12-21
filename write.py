@@ -541,6 +541,7 @@ def vectorized_format(x):
 # Main
 def write_pdf(matrix: np.matrix):
     decomposition = Decomposition()
+    # Maybe these clear()s fixed the bug? (repeating data of previous compositions)
     decomposition.steps.clear()
     decomposition.rows.clear()
     decomposition.cols.clear()
@@ -598,7 +599,7 @@ def write_pdf(matrix: np.matrix):
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
         arguments=['standalone'],
     )
-    # Disabling this fixed the bug - repeating data of previous compositions
+    # Incompatible with Streamlit
     #doc.packages.append(Package('nicematrix')) 
 
     # Write answer
