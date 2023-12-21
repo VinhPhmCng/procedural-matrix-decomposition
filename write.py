@@ -597,7 +597,7 @@ def write_pdf(matrix: np.matrix):
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
         arguments=['standalone'],
     )
-    doc.packages.append(Package('nicematrix'))
+    #doc.packages.append(Package('nicematrix'))
 
     # Write answer
     with doc.create(Section('Answer')):
