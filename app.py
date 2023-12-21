@@ -23,6 +23,8 @@ st.write(
      Will a cloud storage service fix this?
      - Incompatibility with _nicematrix_ - Disabling it does the trick."""
 )
+st.write('Head to Github for more details.')
+st.divider()
 
 #
 row_input, col_input = st.columns(2)
