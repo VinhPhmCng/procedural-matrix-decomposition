@@ -554,6 +554,7 @@ def write_pdf(matrix: np.matrix):
     decomposition = decom(matrix, 0, 0, 0, False, decomposition)
     decomposition.original_matrix = matrix
 
+    # This block is incompatible with Streamlit environment for some reason
     ## A = LU
     ### Get matrix L
     #cols_as_arrays = [
@@ -597,7 +598,8 @@ def write_pdf(matrix: np.matrix):
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
         arguments=['standalone'],
     )
-    #doc.packages.append(Package('nicematrix'))
+    # Disabling this fixed the bug - repeating data of previous compositions
+    #doc.packages.append(Package('nicematrix')) 
 
     # Write answer
     with doc.create(Section('Answer')):
