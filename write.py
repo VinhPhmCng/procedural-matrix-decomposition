@@ -541,6 +541,11 @@ def vectorized_format(x):
 # Main
 def write_pdf(matrix: np.matrix):
     decomposition = Decomposition()
+    decomposition.steps.clear()
+    decomposition.rows.clear()
+    decomposition.cols.clear()
+    decomposition.indices.clear()
+
     decomposition.steps.append(Step(
         0, State.START, Action.START,
         Data(None, None, None, None, None, None, None, None, 0, 0)
