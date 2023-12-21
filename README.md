@@ -88,7 +88,7 @@ Just head to [this link](https://procedural-matrix-decomposition-fuyaf698zxk4emw
 
 **Finally**, use your favorite code compiler or the command line and run _visual.py_
 ```shell
-python visual.py
+python /path/to/visual.py
 ```
 
 **To decompose a matrix of your choice**, simply modify the Numpy matrix called _matrix\_A_ located in the main function
