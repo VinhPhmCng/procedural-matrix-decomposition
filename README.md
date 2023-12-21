@@ -64,6 +64,13 @@ A Python program using Numpy and Pylatex to procedurally generate every step of 
 The algorithm used is recursive and depends only on basic matrix operations.
 Our aim is to introduce the concept of matrix decomposition in a comprehensible fashion.
 
+### Example
+**Input**
+
+<img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
+
+**Output**: [example1.pdf](/examples/example1.pdf)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -92,7 +99,11 @@ python /path/to/visual.py
 ```
 
 **To decompose a matrix of your choice**, simply modify the Numpy matrix called _matrix\_A_ located in the main function
+<img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
+in [visual.py](/original/visual.py)
+
+For more information about Numpy's matrices, head to [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
