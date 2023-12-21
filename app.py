@@ -11,7 +11,7 @@ if 'matrix' not in st.session_state:
 
 def update_matrix():
     matrix_container = st.container(border=True)
-    matrix_container.st.write("Enter the matrix")
+    matrix_container.write("Enter the matrix")
     st.session_state['matrix'] = matrix_container.data_editor(
         data=np.zeros((st.session_state['rows'], st.session_state['cols'])),
         use_container_width=True,
