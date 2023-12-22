@@ -18,18 +18,17 @@ def update_matrix():
         hide_index=True,
     )
 
-st.title('Procedural Matrix Decomposition')
-st.write('Tét tiếng việt á ặ ưu ợ ơ sỡ ')
-st.write("""**Note**: _nicematrix_ is incompatible here for some reason. (No highlighting)""")
-st.write("""**Note**: This is a minimum viable product.""")
-st.write('Head to Github for more details.')
+st.title('Phân Rã Ma Trận')
+st.write("""**Note**: _nicematrix_ không tương thích. (Không có highlighting)""")
+st.write("""**Note**: Đây là một sản phẩm khả thi tối thiểu (MVP).""")
+st.write('Truy cập Github để có thêm thông tin.')
 st.divider()
 
 #
 row_input, col_input = st.columns(2)
 with row_input:
     st.session_state['rows'] = st.number_input(
-        "Enter the number of rows",
+        "Nhập số hàng",
         2,
         6,
         "min",
@@ -40,7 +39,7 @@ with row_input:
 
 with col_input:
     st.session_state['cols'] = st.number_input(
-        "Enter the number of colums",
+        "Nhập số cột",
         2,
         6,
         "min",
@@ -51,12 +50,12 @@ with col_input:
 
 update_matrix()
 
-decompose_button = st.button("Decompose Matrix")
+decompose_button = st.button("Phân Rã Ma Trận")
 if decompose_button:
     # Streamlit's input is in ndarray
     matrix = np.asmatrix(st.session_state['matrix'], dtype=np.float_)
 
-    with st.spinner('Please wait...'):
+    with st.spinner('Đang xử lý...'):
         write_pdf(matrix)
 
     with open("decomposition.pdf", "rb") as f:
