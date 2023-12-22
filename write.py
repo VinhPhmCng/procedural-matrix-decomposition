@@ -610,6 +610,7 @@ def write_pdf(matrix: np.matrix):
             write_result_CR(doc, decomposition, False)
         with doc.create(Subsection('Solution 2')):
             write_result_LU(doc, decomposition)
+            doc.append('tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
     
     # Write details
     with doc.create(Section('Detailed Solution')):
