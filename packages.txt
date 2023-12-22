@@ -1,4 +1,5 @@
 texlive-full
+texlive-xetex
 texlive-latex-base
 texlive-fonts-recommended
 texlive-fonts-extra
