@@ -1,8 +1,7 @@
 import numpy as np
 from algo import *
 
-from pylatex.base_classes import Environment, Arguments, CommandBase
-from pylatex.base_classes.containers import Container
+from pylatex.base_classes import Environment
 from pylatex.package import Package
 from pylatex import Document, Math, Matrix, Alignat, Command, Section, Subsection
 from pylatex.utils import NoEscape, bold
@@ -600,6 +599,8 @@ def write_pdf(matrix: np.matrix):
     )
     # Incompatible with Streamlit
     #doc.packages.append(Package('nicematrix')) 
+
+    doc.append("HELLO??")
 
     # Write answer
     with doc.create(Section('Answer')):
