@@ -598,9 +598,21 @@ def write_pdf(matrix: np.matrix):
         arguments=['standalone'],
     )
     # Incompatible with Streamlit
-    #doc.packages.append(Package('nicematrix')) 
+    doc.packages.append(Package('nicematrix')) 
 
-    doc.append("HELLO??")
+    doc.append('TEST nicematrix')
+    doc.append(Math(
+        data=[
+            bNiceMatrix(
+                decomposition.L, color='red!15',
+                rows=str(2),
+                cols=str(2),
+            )
+        ], 
+        inline=False, 
+        escape=False,
+    ))
+
 
     # Write answer
     with doc.create(Section('Answer')):
