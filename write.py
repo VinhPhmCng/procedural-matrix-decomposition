@@ -592,7 +592,7 @@ def write_pdf(matrix: np.matrix):
 
     #########################################
     # Set up LaTex Document 
-    doc = Document(inputenc='utf8x')
+    doc = Document(inputenc='utf8')
     doc.documentclass = Command(
         'documentclass',
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
@@ -600,9 +600,14 @@ def write_pdf(matrix: np.matrix):
     )
     # Incompatible with Streamlit
     #doc.packages.append(Package('nicematrix')) 
-    doc.packages.append(Package('babel', options=['vietnamese']))
+    #doc.packages.append(Package('babel', options=['vietnamese']))
+    doc.packages.append(Package('polyglossia'))
+    doc.preamble.append(Command(
+        'setmainlanguage',
+        arguments=['vietnamese']
+    ))
 
-    doc.append('12tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
+    doc.append('123tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
 
     # Write answer
     with doc.create(Section('Answer')):
@@ -617,5 +622,5 @@ def write_pdf(matrix: np.matrix):
         write_detailed_solution(doc, decomposition)
 
     # Generate PDF
-    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='latexmk')
+    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='xelatex')
     return
