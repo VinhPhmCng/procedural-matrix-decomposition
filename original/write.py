@@ -591,7 +591,11 @@ if __name__ == '__main__':
         arguments=['standalone'],
     )
     doc.packages.append(Package('nicematrix'))
-    doc.packages.append(Package('babel', options=['vietnamese']))
+    doc.packages.append(Package('polyglossia'))
+    doc.preamble.append(Command(
+        'setmainlanguage',
+        arguments=['vietnamese']
+    ))
 
     # Write answer
     with doc.create(Section('Answer')):
@@ -605,4 +609,4 @@ if __name__ == '__main__':
         write_detailed_solution(doc, decomposition)
 
     # Generate PDF
-    doc.generate_pdf('decomposition', clean_tex=False)
+    doc.generate_pdf('decomposition', clean_tex=False, compiler='xelatex')
