@@ -46,8 +46,8 @@
 <details>
   <summary>Mục Lục</summary>
   <ol>
-	<li><a href="#about-the-project">Về Project</a></li>
-	<li><a href="#how-to-use">Cách Dùng</a></li>
+	<li><a href="#về-project">Về Project</a></li>
+	<li><a href="#cách-dùng">Cách Dùng</a></li>
 	<li><a href="#license">License</a></li>
   </ol>
 </details>
