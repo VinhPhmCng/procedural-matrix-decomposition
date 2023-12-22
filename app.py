@@ -11,7 +11,7 @@ if 'matrix' not in st.session_state:
 
 def update_matrix():
     matrix_container = st.container(border=True)
-    matrix_container.write("Enter the matrix")
+    matrix_container.write("Nhập các phần tử của ma trận")
     st.session_state['matrix'] = matrix_container.data_editor(
         data=np.zeros((st.session_state['rows'], st.session_state['cols'])),
         use_container_width=True,
@@ -19,8 +19,8 @@ def update_matrix():
     )
 
 st.title('Phân Rã Ma Trận')
-st.write("""**Note**: _nicematrix_ không tương thích. (Không có highlighting)""")
-st.write("""**Note**: Đây là một sản phẩm khả thi tối thiểu (MVP).""")
+st.write("""**Chú ý**: _nicematrix_ không tương thích. (Không có highlighting)""")
+st.write("""**Chú ý**: Đây là một sản phẩm khả thi tối thiểu (MVP).""")
 st.write('Truy cập Github để có thêm thông tin.')
 st.divider()
 
