@@ -551,12 +551,12 @@ if __name__ == '__main__':
     # A = LU
     ## Get matrix L
     cols_as_arrays = [
-        np.squeeze(np.asarray(col)) for col in decomposition.cols
+        col.A1for col in decomposition.cols
     ]
     decomposition.L = np.matrix(cols_as_arrays).T # Have to tranpose
     ## Get matrix U
     rows_as_arrays = [
-        np.squeeze(np.asarray(row)) for row in decomposition.rows
+        row.A1 for row in decomposition.rows
     ]
     decomposition.U = np.matrix(rows_as_arrays)
 

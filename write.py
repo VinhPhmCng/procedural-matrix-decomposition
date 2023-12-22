@@ -556,22 +556,21 @@ def write_pdf(matrix: np.matrix):
     decomposition.original_matrix = matrix
 
     # This block is incompatible with Streamlit environment for some reason
-    ## A = LU
-    ### Get matrix L
-    #cols_as_arrays = [
-        #np.squeeze(np.asarray(col)) for col in decomposition.cols
-    #]
-    #print(f'{cols_as_arrays=}')
-    #decomposition.L = np.matrix(cols_as_arrays).T # Have to tranpose
-    ### Get matrix U
-    #rows_as_arrays = [
-        #np.squeeze(np.asarray(row)) for row in decomposition.rows
-    #]
-    #decomposition.U = np.matrix(rows_as_arrays)
+    # A = LU
+    ## Get matrix L
+    cols_as_arrays = [
+        col.A1 for col in decomposition.cols
+    ]
+    decomposition.L = np.matrix(cols_as_arrays).T # Have to tranpose
+    ## Get matrix U
+    rows_as_arrays = [
+        row.A1 for row in decomposition.rows
+    ]
+    decomposition.U = np.matrix(rows_as_arrays)
 
     # Format every matrix in the Decomposition
-    #decomposition.L = vectorized_format(decomposition.L)
-    #decomposition.U = vectorized_format(decomposition.U)
+    decomposition.L = vectorized_format(decomposition.L)
+    decomposition.U = vectorized_format(decomposition.U)
     for i, row in enumerate(decomposition.rows):
         decomposition.rows[i] = vectorized_format(row)
     for i, col in enumerate(decomposition.cols):
@@ -607,10 +606,10 @@ def write_pdf(matrix: np.matrix):
 
     # Write answer
     with doc.create(Section('Answer')):
-        #with doc.create(Subsection('Solution')):
-        write_result_CR(doc, decomposition, False)
-        #with doc.create(Subsection('Solution 2')):
-            #write_result_LU(doc, decomposition)
+        with doc.create(Subsection('Solution')):
+            write_result_CR(doc, decomposition, False)
+        with doc.create(Subsection('Solution 2')):
+            write_result_LU(doc, decomposition)
     
     # Write details
     with doc.create(Section('Detailed Solution')):
