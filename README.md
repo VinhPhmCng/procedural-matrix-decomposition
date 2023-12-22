@@ -93,18 +93,18 @@ Just head to [this link](https://procedural-matrix-decomposition-fuyaf698zxk4emw
 - [Numpy](https://numpy.org/) and [Pylatex](https://jeltef.github.io/PyLaTeX/current/)
 - A Latex compiler such as [MiKTeX](https://miktex.org/) or [TeXLive](https://tug.org/texlive/) AND necessary LaTex packages (MiKTeX should automatically show you packages you need to install when you first run the Python program.)
 
-**Then** download the two files [visual.py](/original/visual.py) and [algo.py](/original/algo.py) located in [/original](/original/)
+**Then** download the two files [write.py](/original/write.py) and [algo.py](/original/algo.py) located in [/original](/original/)
 
-**Finally**, use your favorite code compiler or the command line and run _visual.py_
+**Finally**, use your favorite code compiler or the command line and run _write.py_
 ```shell
-python /path/to/visual.py
+python /path/to/write.py
 ```
 
 **To decompose a matrix of your choice**, simply modify the Numpy matrix called _matrix\_A_ located in the main function
 
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
-in [visual.py](/original/visual.py)
+in [write.py](/original/write.py)
 
 For more information about Numpy's matrices, head to [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html)
 
