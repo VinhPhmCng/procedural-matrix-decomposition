@@ -602,7 +602,7 @@ def write_pdf(matrix: np.matrix):
     #doc.packages.append(Package('nicematrix')) 
     doc.packages.append(Package('babel', options=['vietnamese']))
 
-    doc.append('1tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
+    doc.append('12tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
 
     # Write answer
     with doc.create(Section('Answer')):
@@ -617,5 +617,5 @@ def write_pdf(matrix: np.matrix):
         write_detailed_solution(doc, decomposition)
 
     # Generate PDF
-    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='xelatex')
+    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='latexmk')
     return
