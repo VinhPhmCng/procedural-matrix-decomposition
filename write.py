@@ -554,8 +554,7 @@ def write_pdf(matrix: np.matrix):
     decomposition = decom(matrix, 0, 0, 0, False, decomposition)
     decomposition.original_matrix = matrix
 
-    # This block is incompatible with Streamlit environment for some reason
-    ## A = L
+    # A = L
     ## Get matrix L
     cols_as_arrays = [
         col.A1 for col in decomposition.cols
