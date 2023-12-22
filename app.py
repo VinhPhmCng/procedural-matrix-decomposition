@@ -19,6 +19,7 @@ def update_matrix():
     )
 
 st.title('Procedural Matrix Decomposition')
+st.write('Tét tiếng việt á ặ ưu ợ ơ sỡ ')
 st.write("""**Note**: _nicematrix_ is incompatible here for some reason. (No highlighting)""")
 st.write("""**Note**: This is a minimum viable product.""")
 st.write('Head to Github for more details.')
