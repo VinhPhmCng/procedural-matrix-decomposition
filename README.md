@@ -30,10 +30,10 @@
   </a>
 -->
 
-<h2 align="center">Procedural Matrix Decomposition</h3>
+<h2 align="center">Phân Rã Ma Trận Bằng Đệ Quy</h3>
 
   <p align="center">
-	Using Numpy and Pylatex
+	Với Numpy và Pylatex
 	<br />
 	<br />
 	<br />
@@ -44,10 +44,10 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Mục Lục</summary>
   <ol>
-	<li><a href="#about-the-project">About The Project</a></li>
-	<li><a href="#how-to-use">How To Use</a></li>
+	<li><a href="#about-the-project">Về Project</a></li>
+	<li><a href="#how-to-use">Cách Dùng</a></li>
 	<li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -55,16 +55,18 @@
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## Về Project
 
-A minimum viable product that is part of the development process of [LAFD](https://github.com/VinhPhmCng/LAFD)
+**English version**: [main branch](https://github.com/VinhPhmCng/procedural-matrix-decomposition)
 
-A Python program using Numpy and Pylatex to procedurally generate every step of a matrix decomposition process.
+Đây là một sản phẩm khả thi tối thiểu (MVP) - đóng góp cho sự phát triển của [LAFD](https://github.com/VinhPhmCng/LAFD).
 
-The algorithm used is recursive and depends only on basic matrix operations.
-Our aim is to introduce the concept of matrix decomposition in a comprehensible fashion.
+Một phần mềm Python dùng Numpy và Pylatex để soạn thảo các bước trong quá trình phân rã một ma trận một cách tự động.
 
-### Example
+Thuật toán được sử dụng mang tính đệ quy và chỉ sử dụng những phép toán ma trận cơ bản nhất.
+Mục tiêu của chúng mình là giới thiệu khái niệm phân rã ma trận một cách dễ hiểu.
+
+### Ví dụ
 **Input**
 
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
@@ -75,36 +77,36 @@ Our aim is to introduce the concept of matrix decomposition in a comprehensible 
 
 
 <!-- HOW TO USE -->
-## How To Use
+## Cách Dùng
 
-### Streamlit
+### Dùng Streamlit
 
-The project is deployed on [Streamlit](https://streamlit.io/) for ease of use, thanks to its Cloud sharing service.
+Project này được triển khai trên [Streamlit](https://streamlit.io/) để tiện sử dụng, nhờ dịch vụ Cloud sharing.
 
-Just head to [this link](https://procedural-matrix-decomposition-fuyaf698zxk4emw4uufsfm.streamlit.app/).
+Truy cập app [ở đây](https://procedural-matrix-decomposition-fuyaf698zxk4emw4uufsfm.streamlit.app/).
 
 
-### Local use
+### Sử dụng trực tiếp
 
-**Requirements** (It is recommended to use a virtual environemnt such as [Anaconda](https://www.anaconda.com/).)
+**Yêu cầu** (Bạn nên sử dụng một môi trường ảo như [Anaconda](https://www.anaconda.com/).)
 - [Python](https://www.python.org/) >= 3.11.5
-- [Numpy](https://numpy.org/) and [Pylatex](https://jeltef.github.io/PyLaTeX/current/)
-- A Latex compiler such as [MiKTeX](https://miktex.org/) or [TeXLive](https://tug.org/texlive/) AND necessary LaTex packages (MiKTeX should automatically show you packages you need to install when you first run the Python program.)
+- [Numpy](https://numpy.org/) và [Pylatex](https://jeltef.github.io/PyLaTeX/current/)
+- Trình biên dịch LaTex như [MiKTeX](https://miktex.org/) hoặc [TeXLive](https://tug.org/texlive/) VÀ những LaTex packages cần thiết (MiKTeX sẽ báo cho bạn những packages cần cài đặt khi bạn lần đầu chạy chương trình Python này.)
 
-**Then** download the two files [visual.py](/original/visual.py) and [algo.py](/original/algo.py) located in [/original](/original/)
+**Sau đó**, tải hai files [write.py](/original/write.py) và [algo.py](/original/algo.py) ở thư mục [/original](/original/).
 
-**Finally**, use your favorite code compiler or the command line and run _visual.py_
+**Cuối cùng**, sử dụng trình biên dịch yêu thích của bạn, hoặc command line, để chạy __.
 ```shell
-python /path/to/visual.py
+python /path/to/write.py
 ```
 
-**To decompose a matrix of your choice**, simply modify the Numpy matrix called _matrix\_A_ located in the main function
+**Để phân rã một ma trận bất kỳ**, bạn chỉ cần thay đổi _matrix\_A_ ở trong hàm main
 
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
-in [visual.py](/original/visual.py)
+trong file [write.py](/original/write.py).
 
-For more information about Numpy's matrices, head to [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html)
+Để biết thêm về ma trận của Numpy, truy cập [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html).
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
