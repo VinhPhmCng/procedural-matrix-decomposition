@@ -592,7 +592,7 @@ def write_pdf(matrix: np.matrix):
 
     #########################################
     # Set up LaTex Document 
-    doc = Document(inputenc='utf8')
+    doc = Document(inputenc='utf8x')
     doc.documentclass = Command(
         'documentclass',
         options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
