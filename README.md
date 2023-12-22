@@ -57,6 +57,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+**Phiên bản tiếng Việt**: [nhánh vn-vi](https://github.com/VinhPhmCng/procedural-matrix-decomposition/tree/vn-vi)
+
 A minimum viable product that is part of the development process of [LAFD](https://github.com/VinhPhmCng/LAFD)
 
 A Python program using Numpy and Pylatex to procedurally generate every step of a matrix decomposition process.
