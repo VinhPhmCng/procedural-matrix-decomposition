@@ -616,5 +616,5 @@ def write_pdf(matrix: np.matrix):
         write_detailed_solution(doc, decomposition)
 
     # Generate PDF
-    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='latexmk')
+    doc.generate_pdf('decomposition', clean_tex=True, clean=True, compiler='xelatex')
     return
