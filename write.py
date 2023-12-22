@@ -602,7 +602,7 @@ def write_pdf(matrix: np.matrix):
     #doc.packages.append(Package('nicematrix')) 
     doc.packages.append(Package('babel', options=['vietnamese']))
 
-    doc.append('tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
+    doc.append('1tét tiếng việt á ơ ỡ ữ ư ự ợ á ạ')
 
     # Write answer
     with doc.create(Section('Answer')):
