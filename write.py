@@ -331,10 +331,9 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append('to match with the column ')
                 write_col(doc, data)
                 doc.append('\nSubstracting ')
-                write_col(doc, data)
                 doc.append(Math(
                     data=[
-                        r'\cdot I_{', data.mat_idx, r'} \ ',
+                        r'C_{', data.n + 1 ,r'} \cdot I_{', data.mat_idx, r'} \ ',
                     ], 
                     inline=True, 
                     escape=False,
