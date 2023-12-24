@@ -136,7 +136,7 @@ def vectorized_format(x):
     return np.vectorize(format)(x)
 
 
-def format(decomposition: Decomposition):
+def format_decomposition(decomposition: Decomposition):
     decomposition.L = vectorized_format(decomposition.L)
     decomposition.U = vectorized_format(decomposition.U)
     for i, row in enumerate(decomposition.rows):
@@ -170,7 +170,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
         row_m[0, n] = 1.0
 
         # Save row and col
-        format(saves)
+        format_decomposition(saves)
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
@@ -204,7 +204,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
         if np.array_equal(remainder, np.zeros(remainder.shape, dtype=np.float_)): 
             print("DONE")
             # Save row and col
-            format(saves)
+            format_decomposition(saves)
             saves.rows.append(row_m)
             saves.cols.append(col_n)
             saves.indices.append([m, n])
@@ -230,7 +230,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
 
         # Linearly independent
         # Save row and col
-        format(saves)
+        format_decomposition(saves)
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
@@ -261,7 +261,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
     if temp == num_of_col:
         # We don't take this row
 
-        format(saves)
+        format_decomposition(saves)
         # Record step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
@@ -289,7 +289,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
 
     # We don't take any row or col while permutating
     # Record step
-    format(saves)
+    format_decomposition(saves)
     permutation_object = Permutation(permutation, [n, temp])
     saves.steps.append(Step(
         saves.steps[-1].number + 1,
