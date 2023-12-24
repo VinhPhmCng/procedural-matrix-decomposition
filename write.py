@@ -138,6 +138,9 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append('We prepare ourselves mentally.')
                 return
 
+            case State.ZERO_MATRIX:
+                doc.append('What, you fr wanna decompose a zero matrix? LOL')
+
             case State.END:
                 doc.append('Finally, we have the matrix')
                 doc.append(Math(
