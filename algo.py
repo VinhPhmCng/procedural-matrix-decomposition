@@ -133,6 +133,8 @@ def format(x): # Replace all -0.0 with 0.0
 
 
 def vectorized_format(x):
+    print(x)
+    print(np.vectorize(format)(x))
     return np.vectorize(format)(x)
 
 
