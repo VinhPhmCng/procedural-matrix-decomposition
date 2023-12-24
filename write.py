@@ -506,7 +506,7 @@ def write_pdf(matrix: np.matrix):
                 step.data.CnRm = vectorized_format(step.data.CnRm)
             if step.data.remainder is not None:
                 step.data.remainder = vectorized_format(step.data.remainder)
-        step.view()
+        #step.view()
 
 
     #########################################
