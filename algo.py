@@ -137,8 +137,6 @@ def vectorized_format(x):
 
 
 def format_decomposition(decomposition: Decomposition):
-    decomposition.L = vectorized_format(decomposition.L)
-    decomposition.U = vectorized_format(decomposition.U)
     for i, row in enumerate(decomposition.rows):
         decomposition.rows[i] = vectorized_format(row)
     for i, col in enumerate(decomposition.cols):
