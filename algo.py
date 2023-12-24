@@ -5,11 +5,9 @@ from enum import Enum
 
 class State(Enum):
     NO_ZERO = 1
-    ZERO_ROW_COL = 2
+    ZERO_COL = 2
     ZERO_ROW = 3
-    ZERO_COL = 4
-    ZERO_EL = 5
-    TEMPORARY_SKIPPING_COL = 6
+    ZERO_EL = 4
 
     START = 50
     END = 51
@@ -17,23 +15,25 @@ class State(Enum):
     UNDETERMINED = 100
 
 
-class Action(Enum):
-    INCREMENT_ROW_COL = 1
-    INCREMENT_ROW = 2
-    INCREMENT_COL = 3
-    FIND_NONZERO_EL = 4
-    INCREMENT_ROW_AND_RECALL_COL = 5
+class Permutation():
+    def __init__(self, matrix: np.matrix, targets: list) -> None:
+        self.matrix = matrix
+        targets = targets
 
-    START = 50
-    END = 51
+    matrix: np.matrix
+    targets = []
 
-    UNDETERMINED = 100
+    def view(self):
+        print(f'{self.matrix=}')
+        print(f'{self.targets=}')
 
 
 class Data():
     def __init__(
             self,
-            mat: np.matrix, row: np.matrix, col: np.matrix, CnRm: np.matrix, remainder: np.matrix,
+            mat: np.matrix, row: np.matrix, col: np.matrix, 
+            CnRm: np.matrix, remainder: np.matrix,
+            permutation: Permutation,
             m: int, n: int, element: float,
             mat_idx: int, remainder_idx: int
     ) -> None:
@@ -42,6 +42,7 @@ class Data():
         self.col = col
         self.CnRm = CnRm
         self.remainder = remainder
+        self.permutation = permutation
         self.m = m
         self.n = n
         self.element = element
@@ -53,6 +54,7 @@ class Data():
     col: np.matrix
     CnRm: np.matrix
     remainder: np.matrix
+    permutation: Permutation
     m: int
     n: int
     element: float 
@@ -67,6 +69,8 @@ class Data():
         print(f'{self.col=}')
         print(f'{self.CnRm=}')
         print(f'{self.remainder=}')
+        if self.permutation is not None:
+            self.permutation.view()
         print(f'{self.m=}')
         print(f'{self.n=}')
         print(f'{self.element=}')
@@ -74,17 +78,15 @@ class Data():
 
 class Step():
     def __init__(
-            self, number: int, state: State, action: Action, data: Data
+            self, number: int, state: State, data: Data
         ) -> None:
         self.number = number
         self.state = state
-        self.action = action
         self.data = data
 
     # Discription
     number: int
     state: int = State.UNDETERMINED
-    action: int = Action.UNDETERMINED
 
     # Data 
     data: Data
@@ -94,7 +96,6 @@ class Step():
         print('===================================')
         print(f'{self.number=}')
         print(f'{self.state=}')
-        print(f'{self.action=}')
         self.data.view()
 
 
@@ -102,189 +103,182 @@ class Decomposition():
     original_matrix: np.matrix
     steps = []
 
-    # A = CR
     rows = []
     cols = []
     indices = []
 
+    # Permutation matrix (for columns)
+    permutations = []
+    P: np.matrix
+
     # A = LU
-    L = np.matrix
-    U = np.matrix
+    L: np.matrix
+    U: np.matrix
+
+    def calculate_P(self):
+        num_of_col = self.original_matrix.shape[1]
+        self.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
+        for permutation in self.permutations:
+            self.P = np.matmul(self.P, permutation.matrix)
+
+
+# Helper functions
+def format(x): # Replace all -0.0 with 0.0
+    if x == 0.0:
+        return 0.0
+
+    if abs(x) < 1e-16:
+        x = 0.0
+    return x
+
+
+def vectorized_format(x):
+    return np.vectorize(format)(x)
 
 
 # The decomposition algorithm
 # A = CR
-def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: Decomposition) -> Decomposition:
-    # Get the matrix's dimensions
+def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition:
     num_of_row = mat.shape[0]
     num_of_col = mat.shape[1]
-
-    row_m = mat[m, :]
     col_n = mat[:, n]
-    element_mn = mat[m, n]
 
-    if element_mn != 0:
-        row_m = row_m / element_mn
-    else:
-        # A[m][n] = 0
-        # Find element A[m][n + a] != 0
-        # If cannot find -> This row is a zero-vector -> Do nothing
-        temp = n
-        while mat[m, temp] == 0:
-            temp += 1
-            if temp == num_of_col: # Exceeds number of columns -> This row is a zero-vector
-                break
+    # If col_n is a ZERO vector
+    if np.array_equal(col_n, np.zeros((num_of_row, 1), dtype=np.float_)):
+        row_m = np.asmatrix(np.zeros((1, num_of_col), dtype=np.float_), dtype=np.float_)
+        row_m[0, n] = 1.0
 
-        # Found
-        # -> Pick out C(n + a) and Rm for the decomposition,
-        # instead of Cn and Rm,
-        # and remember Cn
-        # Afterward, continue with the next row - Cn and R(m + 1)
-        if temp != num_of_col:
-            saves.steps.append(Step(
-                saves.steps[-1].number + 1,
-                State.ZERO_EL,
-                Action.FIND_NONZERO_EL,
-                Data(
-                    mat, row_m, col_n, None, None,
-                    m, n, element_mn,
-                    saves.steps[-1].data.remainder_idx,
-                    saves.steps[-1].data.remainder_idx,
-                )
-            ))
-            return decom(mat=mat, m=m, n=temp, save_n=n, goto_save=True, saves=saves)
-        
-    CnRm = np.dot(col_n, row_m)
-    remainder = mat - CnRm
-
-    # Input zero matrix
-    if not mat.any(): 
-        # Save answer
+        # Save row and col
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
 
-        # Save step
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.END,
-            Action.END,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
-            )
-        ))
-        return saves # End of recursion
-
-    # If row_m AND col_n are zero-vectors
-    if (
-        np.array_equal(row_m, np.zeros((1, num_of_col)))
-        and np.array_equal(col_n, np.zeros((num_of_row, 1)))
-    ):
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_ROW_COL,
-            Action.INCREMENT_ROW_COL,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx,
-            )
-        ))
-        return decom(mat=mat, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
-
-    # If only row_m is a zero-vector
-    if np.array_equal(row_m, np.zeros((1, num_of_col))):
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_ROW,
-            Action.INCREMENT_ROW,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx,
-            )
-        ))
-        return decom(mat=mat, m=m + 1, n=n, save_n=0, goto_save=False, saves=saves)
-
-    # If only col_n is a zero-vector
-    if np.array_equal(col_n, np.zeros((num_of_row, 1))):
+        # Record step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
             State.ZERO_COL,
-            Action.INCREMENT_COL,
             Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx,
+                mat=mat, row=row_m, col=col_n,
+                CnRm=None, remainder=mat, permutation=None,
+                m=m, n=n, element=0.0,
+                mat_idx = saves.steps[-1].data.remainder_idx,
+                remainder_idx = saves.steps[-1].data.remainder_idx,
             )
         ))
-        return decom(mat=mat, m=m, n=n + 1, save_n=0, goto_save=False, saves=saves)
+        return decom(mat=mat, m=m, n=n+1, saves=saves)
 
+    # If col_n is a NON-ZERO vector
+    element_mn = mat[m, n]
+    row_m = mat[m, :]
 
-    # If we reach this point and the remainder is a zero matrix
-    # -> The matrix has been decomposed
-    if np.array_equal(mat, CnRm): 
-        # Save answer
+    if element_mn != 0.0:
+        row_m = row_m / element_mn
+        CnRm = np.matmul(col_n, row_m, dtype=np.float_)
+        remainder = mat - CnRm
+
+        # If we reach this point and the remainder is a zero matrix
+        # -> The matrix has been decomposed
+        remainder = vectorized_format(remainder)
+        if np.array_equal(remainder, np.zeros(remainder.shape, dtype=np.float_)): 
+            print("DONE")
+            # Save row and col
+            saves.rows.append(row_m)
+            saves.cols.append(col_n)
+            saves.indices.append([m, n])
+
+            # Record step
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.END,
+                Data(
+                    mat=mat, row=row_m, col=col_n,
+                    CnRm=CnRm, remainder=remainder, permutation=None,
+                    m=m, n=n, element=element_mn,
+                    mat_idx = saves.steps[-1].data.remainder_idx,
+                    remainder_idx = saves.steps[-1].data.remainder_idx + 1,
+                )
+            ))
+            return saves # End of recursion
+        else:
+            # Reaching the last row and column without decomposing the matrix
+            if m >= num_of_row - 1 and n >= num_of_col - 1: 
+                print("Something went wrong?")
+                return
+
+        # Linearly independent
+        # Save row and col
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
 
-        # Save step
+        # Record step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
-            State.END,
-            Action.END,
+            State.NO_ZERO,
             Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
+                mat=mat, row=row_m, col=col_n,
+                CnRm=CnRm, remainder=remainder, permutation=None,
+                m=m, n=n, element=element_mn,
+                mat_idx = saves.steps[-1].data.remainder_idx,
+                remainder_idx = saves.steps[-1].data.remainder_idx + 1,
             )
         ))
-        return saves # End of recursion
-    else:
-        # Reaching the last row and column without decomposing the matrix
-        if m == num_of_row - 1 and n == num_of_col - 1: 
-            print("Something went wrong?")
-            return
+        return decom(mat=remainder, m=m+1, n=n+1, saves=saves)
+        
+    # Else, element_mn == 0.0
+    temp = 1
+    while temp < num_of_col:
+        if mat[m, temp] == 0.0:
+            temp += 1
+        else:
+            break
 
-    # Save answer
-    saves.rows.append(row_m)
-    saves.cols.append(col_n)
-    saves.indices.append([m, n])
+    ### Row m is a zero vector
+    if temp == num_of_col:
+        # We don't take this row
 
-    # Continue decomposing
-    if goto_save:
-        # Save step
+        # Record step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
-            State.TEMPORARY_SKIPPING_COL,
-            Action.INCREMENT_ROW_AND_RECALL_COL,
+            State.ZERO_ROW,
             Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
+                mat=mat, row=row_m, col=col_n,
+                CnRm=None, remainder=mat, permutation=None,
+                m=m, n=n, element=0.0,
+                mat_idx = saves.steps[-1].data.remainder_idx,
+                remainder_idx = saves.steps[-1].data.remainder_idx,
             )
         ))
-        return decom(mat=remainder, m=m + 1, n=save_n, save_n=0, goto_save=False, saves=saves)
+        return decom(mat=mat, m=m+1, n=n, saves=saves)
 
-    # Save step
+    ### Else, permute
+    permutation = np.asmatrix(np.zeros((num_of_col, num_of_col), dtype=np.float_), dtype=np.float_)
+    for i in range(num_of_col):
+        if i == m:
+            permutation[m, temp] = 1.0
+            continue
+        if i == temp:
+            permutation[temp, m] = 1.0
+            continue
+        permutation[i, i] = 1.0
+
+    # We don't take any row or col while permutating
+    # Record step
+    permutation_object = Permutation(permutation, [n, temp])
     saves.steps.append(Step(
         saves.steps[-1].number + 1,
-        State.NO_ZERO,
-        Action.INCREMENT_ROW_COL,
+        State.ZERO_EL,
         Data(
-            mat, row_m, col_n, CnRm, remainder,
-            m, n, element_mn,
-            saves.steps[-1].data.remainder_idx,
-            saves.steps[-1].data.remainder_idx + 1,
+            mat=mat, row=row_m, col=col_n,
+            CnRm=None, remainder=mat,
+            permutation=permutation_object,
+            m=m, n=n, element=0.0,
+            mat_idx = saves.steps[-1].data.remainder_idx,
+            remainder_idx = saves.steps[-1].data.remainder_idx,
         )
     ))
-    return decom(mat=remainder, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+    saves.permutations.append(permutation_object)
+    return decom(
+        mat = np.matmul(mat, permutation, dtype=np.float_), 
+        m=m, n=n, saves=saves,
+    )
