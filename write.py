@@ -312,7 +312,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append('is a ')
                 doc.append(bold('zero vector'))
                 doc.append(', meaning validly multiplying it with any vector/matrix ')
-                doc.append('will always give a zero-matrix.')
+                doc.append('will always give a zero-matrix. ')
                 doc.append('We will still pick a ')
                 doc.append(bold('basis vector'))
                 doc.append(Math(
