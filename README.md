@@ -93,7 +93,7 @@ Truy cập app [ở đây](https://procedural-matrix-decomposition-fuyaf698zxk4e
 - [Numpy](https://numpy.org/) và [Pylatex](https://jeltef.github.io/PyLaTeX/current/)
 - Trình biên dịch LaTex như [MiKTeX](https://miktex.org/) hoặc [TeXLive](https://tug.org/texlive/) VÀ những LaTex packages cần thiết (MiKTeX sẽ báo cho bạn những packages cần cài đặt khi bạn lần đầu chạy chương trình Python này.)
 
-**Sau đó**, tải hai files [write.py](/original/write.py) và [algo.py](/original/algo.py) ở thư mục [/original](/original/).
+**Sau đó**, tải hai files [write.py](/local/write.py) và [algo.py](/local/algo.py) ở thư mục [/local](/local/).
 
 **Cuối cùng**, sử dụng trình biên dịch yêu thích của bạn, hoặc command line, để chạy __.
 ```shell
@@ -104,7 +104,7 @@ python /path/to/write.py
 
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
-trong file [write.py](/original/write.py).
+trong file [write.py](/local/write.py).
 
 Để biết thêm về ma trận của Numpy, truy cập [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html).
 
