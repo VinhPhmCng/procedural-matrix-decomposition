@@ -400,9 +400,9 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 write_col(doc, data)
                 doc.append(' is a linear combination of some other columns.')
                 doc.append('To reduce the rank, we have to switch column ')
-                doc.append(Math(data=[data.permutation.a, r' \ '], inline=True, escape=False))
+                doc.append(Math(data=[data.permutation.a + 1, r' \ '], inline=True, escape=False))
                 doc.append(' with column ')
-                doc.append(Math(data=[data.permutation.b, r' \ '], inline=True, escape=False))
+                doc.append(Math(data=[data.permutation.b + 1, r' \ '], inline=True, escape=False))
                 doc.append('.\nTo do that, we have to multiply the matrix with a permutation matrix')
                 doc.append(Math(
                     data=[
