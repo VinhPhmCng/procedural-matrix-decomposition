@@ -93,7 +93,7 @@ Just head to [this link](https://procedural-matrix-decomposition-fuyaf698zxk4emw
 - [Numpy](https://numpy.org/) and [Pylatex](https://jeltef.github.io/PyLaTeX/current/)
 - A Latex compiler such as [MiKTeX](https://miktex.org/) or [TeXLive](https://tug.org/texlive/) AND necessary LaTex packages (MiKTeX should automatically show you packages you need to install when you first run the Python program.)
 
-**Then** download the two files [write.py](/original/write.py) and [algo.py](/original/algo.py) located in [/original](/original/)
+**Then** download the two files [write.py](/local/write.py) and [algo.py](/local/algo.py) located in [/local](/local/)
 
 **Finally**, use your favorite code compiler or the command line and run _write.py_
 ```shell
@@ -104,7 +104,7 @@ python /path/to/write.py
 
 <img src="https://raw.githubusercontent.com/VinhPhmCng/procedural-matrix-decomposition/main/images/matrix_A.png" alt="matrix_A" width="30%">
 
-in [write.py](/original/write.py)
+in [write.py](/local/write.py)
 
 For more information about Numpy's matrices, head to [numpy.matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html)
 
