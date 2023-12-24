@@ -117,8 +117,6 @@ class Decomposition():
     L: np.matrix
     U: np.matrix
 
-    def calculate_P(self):
-
 
 # Helper functions
 def format(x): # Replace all -0.0 with 0.0
