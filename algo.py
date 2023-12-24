@@ -16,16 +16,18 @@ class State(Enum):
 
 
 class Permutation():
-    def __init__(self, matrix: np.matrix, targets: list) -> None:
+    def __init__(self, matrix: np.matrix, a: int, b: int) -> None:
         self.matrix = matrix
-        targets = targets
+        self.a = a
+        self.b = b
 
     matrix: np.matrix
-    targets = []
+    a: int
+    b: int
 
     def view(self):
         print(f'{self.matrix=}')
-        print(f'{self.targets=}')
+        print(f'{self.a=}, {self.b=}')
 
 
 class Data():
@@ -116,10 +118,6 @@ class Decomposition():
     U: np.matrix
 
     def calculate_P(self):
-        num_of_col = self.original_matrix.shape[1]
-        self.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
-        for permutation in self.permutations:
-            self.P = np.matmul(self.P, permutation.matrix)
 
 
 # Helper functions
@@ -263,7 +261,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
 
     # We don't take any row or col while permutating
     # Record step
-    permutation_object = Permutation(permutation, [n, temp])
+    permutation_object = Permutation(permutation, n, temp)
     saves.steps.append(Step(
         saves.steps[-1].number + 1,
         State.ZERO_EL,

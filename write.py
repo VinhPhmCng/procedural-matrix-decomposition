@@ -60,7 +60,7 @@ class bNiceMatrix(Environment):
         return string
 
 
-def write_result_CR(doc: Document, decom: Decomposition, oneline: bool):
+def write_answer(doc: Document, decom: Decomposition):
     doc.append('The matrix can be decomposed into the following combinations:')
 
     # Write A = CR
@@ -72,55 +72,43 @@ def write_result_CR(doc: Document, decom: Decomposition, oneline: bool):
             agn.append(Matrix(decom.cols[i], mtype='b'))
             agn.append('\cdot')
             agn.append(Matrix(decom.rows[i], mtype='b'))
-            if i != len(decom.rows) - 1:
-                if oneline:
-                    agn.append(r'\\ &+ ')
-                else:
-                    agn.append(r' + ')
+            #agn.append(r'\\ &+ ')
+            agn.append(r' + ')
 
-    # Write short answer
-    short = 'A = '
-    for i in range(len(decom.rows)):
-        short += 'C_{'
-        short += str(decom.indices[i][1] + 1)
-        short += '}R_{'
-        short += str(decom.indices[i][0] + 1)
-        short += '}'
-        if i != len(decom.rows) - 1:
-            short += ' + '
-
-    doc.append('This means that:')
-    doc.append(Math(data=[short], inline=False, escape=False))
-    doc.append('Look at the detailed solution to see where ')
-    doc.append(Math(data=[r'R_{i}\ '], inline=True, escape=False))
-    doc.append('and ')
-    doc.append(Math(data=[r'C_{j}\ '], inline=True, escape=False))
-    doc.append('come from.')
-    return
-
-
-def write_result_LU(doc: Document, decom: Decomposition):
-    doc.append('The matrix can also be decomposed into two matrices ')
+    # Write A = LU
+    doc.append('Another representation is:')
     doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
 
-    doc.append(Math(
-        data=[
-            Matrix(decom.original_matrix, mtype='b'),
-            r' = ',
-            Matrix(decom.L, mtype='b'),
-            r' \cdot ',
-            Matrix(decom.U, mtype='b'),
-        ],
-        inline=False,
-        escape=False,
-    ))
+    if len(decom.permutations) > 0:
+        doc.append(Math(
+            data=[
+                Matrix(decom.P, mtype='b'),
+                r' \cdot ',
+                Matrix(decom.original_matrix, mtype='b'),
+                r' = ',
+                Matrix(decom.L, mtype='b'),
+                r' \cdot ',
+                Matrix(decom.U, mtype='b'),
+            ],
+            inline=False,
+            escape=False,
+        ))
+    else:
+        doc.append(Math(
+            data=[
+                Matrix(decom.original_matrix, mtype='b'),
+                r' = ',
+                Matrix(decom.L, mtype='b'),
+                r' \cdot ',
+                Matrix(decom.U, mtype='b'),
+            ],
+            inline=False,
+            escape=False,
+        ))
     return
 
 
 def write_detailed_solution(doc: Document, decom: Decomposition):
-    doc.append('We will now go into the details of ')
-    doc.append(Math(data=[r'A = \sum_{}^{}C_{i}R_{j}'], inline=True, escape=False))
-
     def write_row(doc: Document, data: Data):
         doc.append(Math(data=[r'R_{', data.m + 1, r'} \ '], inline=True, escape=False))
         return
@@ -222,6 +210,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                             #rows=str(data.m + 1),
                             #cols=str(data.n + 1),
                     #))
+                doc.append('Bravo! We have successfully decomposed the matrix.')
                 return
 
             case State.NO_ZERO:
@@ -302,29 +291,6 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append('have been reduced to 0.')
                 return
 
-            case State.ZERO_ROW:
-                doc.append('We have the matrix')
-                doc.append(Math(
-                    data=[
-                        r'A_{', data.mat_idx, r'} = ',
-                        Matrix(data.mat, mtype='b'),
-                        #bNiceMatrix(
-                            #data.mat, color='red!15',
-                            #rows=str(data.m + 1),
-                            #cols=str(data.n + 1),
-                        #)
-                    ], 
-                    inline=False, 
-                    escape=False,
-                ))
-                doc.append('We can see that the row ')
-                write_row(doc, data)
-                doc.append('is a ')
-                doc.append(bold('zero vector'))
-                doc.append(', meaning validly multiplying it with any vector/matrix ')
-                doc.append('will always give a zero-matrix.')
-                return
-
             case State.ZERO_COL:
                 doc.append('We have the matrix')
                 doc.append(Math(
@@ -346,6 +312,65 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(bold('zero vector'))
                 doc.append(', meaning validly multiplying it with any vector/matrix ')
                 doc.append('will always give a zero-matrix.')
+                doc.append('We will still pick a ')
+                doc.append(bold('basis vector'))
+                doc.append(Math(
+                    data=[
+                        r'I_{', data.n, r'} = ',
+                        Matrix(data.row, mtype='b'),
+                        #bNiceMatrix(
+                            #data.mat, color='red!15',
+                            #rows=str(data.m + 1),
+                            #cols=str(data.n + 1),
+                        #)
+                    ], 
+                    inline=False, 
+                    escape=False,
+                ))
+                doc.append('to match with the column ')
+                write_col(doc, data)
+                doc.append('\nSubstracting ')
+                write_col(doc, data)
+                doc.append(Math(
+                    data=[
+                        r'\cdot E_{', data.mat_idx, r'} \ ',
+                    ], 
+                    inline=True, 
+                    escape=False,
+                ))
+                doc.append(' from ')
+                doc.append(Math(
+                    data=[
+                        r'A_{', data.mat_idx, r'} \ ',
+                    ], 
+                    inline=True, 
+                    escape=False,
+                ))
+                doc.append(' does nothing. So we increment the column but keep the same row.')
+                return
+
+            case State.ZERO_ROW:
+                doc.append('We have the matrix')
+                doc.append(Math(
+                    data=[
+                        r'A_{', data.mat_idx, r'} = ',
+                        Matrix(data.mat, mtype='b'),
+                        #bNiceMatrix(
+                            #data.mat, color='red!15',
+                            #rows=str(data.m + 1),
+                            #cols=str(data.n + 1),
+                        #)
+                    ], 
+                    inline=False, 
+                    escape=False,
+                ))
+                doc.append('We can see that the row ')
+                write_row(doc, data)
+                doc.append('is a ')
+                doc.append(bold('zero vector'))
+                doc.append(', meaning validly multiplying it with any vector/matrix ')
+                doc.append('will always give a zero-matrix.')
+                doc.append('\nTherefore, we will keep the column but increment the row.')
                 return
 
             case State.ZERO_EL:
@@ -371,8 +396,37 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(bold('non-zero vector'))
                 doc.append(', we can see that the element ')
                 write_element(doc, data)
-                doc.append('\nThis means ... ')
-                doc.append('and they cannot be picked.')
+                doc.append('\nThis means that the row ')
+                write_col(doc, data)
+                doc.append(' is a linear combination of some other columns.')
+                doc.append('To reduce the rank, we have to switch column ')
+                doc.append(Math(data=[data.permutation.a, r' \ '], inline=True, escape=False))
+                doc.append(' with column ')
+                doc.append(Math(data=[data.permutation.b, r' \ '], inline=True, escape=False))
+                doc.append('.\nTo do that, we have to multiply the matrix with a permutation matrix')
+                doc.append(Math(
+                    data=[
+                        r'A_{', data.mat_idx, r'} = ',
+                        Matrix(data.mat, mtype='b'),
+                        #bNiceMatrix(
+                            #data.mat, color='red!15',
+                            #rows=str(data.m + 1),
+                            #cols=str(data.n + 1),
+                        #)
+                        r'\cdot ',
+                        Matrix(data.permutation.matrix, mtype='b'),
+                        #bNiceMatrix(
+                            #data.permutation.matrix, color='red!15',
+                            #rows=str(data.m + 1),
+                            #cols=str(data.n + 1),
+                        #)
+                        r' = ',
+                        Matrix(np.matmul(data.mat, data.permutation.matrix), mtype='b'),
+                    ], 
+                    inline=False, 
+                    escape=False,
+                ))
+                doc.append('Then, we continue with the same row and column, but with the new matrix.')
                 return
 
             case _:
@@ -414,6 +468,12 @@ def write_pdf(matrix: np.matrix):
     ))
     decomposition = decom(matrix, 0, 0, decomposition)
     decomposition.original_matrix = matrix
+
+    # Get matrix P
+    num_of_col = decomposition.original_matrix.shape[1]
+    decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
+    for permutation in decomposition.permutations:
+        decomposition.P = np.matmul(decomposition.P, permutation.matrix)
 
     # A = L
     ## Get matrix L
@@ -462,10 +522,7 @@ def write_pdf(matrix: np.matrix):
 
     # Write answer
     with doc.create(Section('Answer')):
-        with doc.create(Subsection('Solution')):
-            write_result_CR(doc, decomposition, False)
-        with doc.create(Subsection('Solution 2')):
-            write_result_LU(doc, decomposition)
+        write_answer(doc, decomposition)
     
     # Write details
     with doc.create(Section('Detailed Solution')):
