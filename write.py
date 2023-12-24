@@ -78,14 +78,14 @@ def write_answer(doc: Document, decom: Decomposition):
 
     # Write A = LU
     doc.append('Another representation is: ')
-    doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
+    #doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
 
     if len(decom.permutations) > 0:
         doc.append(Math(
             data=[
-                Matrix(decom.P, mtype='b'),
-                r' \cdot ',
                 Matrix(decom.original_matrix, mtype='b'),
+                r' \cdot ',
+                Matrix(decom.P, mtype='b'),
                 r' = ',
                 Matrix(decom.L, mtype='b'),
                 r' \cdot ',
