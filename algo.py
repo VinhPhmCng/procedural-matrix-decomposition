@@ -131,30 +131,8 @@ def format(x): # Replace all -0.0 with 0.0
         x = 0.0
     return x
 
-
 def vectorized_format(x):
-    print(x)
-    print(np.vectorize(format)(x))
     return np.vectorize(format)(x)
-
-
-def format_decomposition(decomposition: Decomposition):
-    for i, row in enumerate(decomposition.rows):
-        decomposition.rows[i] = vectorized_format(row)
-    for i, col in enumerate(decomposition.cols):
-        decomposition.cols[i] = vectorized_format(col)
-
-    for step in decomposition.steps:
-        if step.data.mat is not None:
-            step.data.mat = vectorized_format(step.data.mat)
-        if step.data.row is not None:
-            step.data.row = vectorized_format(step.data.row)
-        if step.data.col is not None:
-            step.data.col = vectorized_format(step.data.col)
-        if step.data.CnRm is not None:
-            step.data.CnRm = vectorized_format(step.data.CnRm)
-        if step.data.remainder is not None:
-            step.data.remainder = vectorized_format(step.data.remainder)
 
 
 # The decomposition algorithm
@@ -170,7 +148,6 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
         row_m[0, n] = 1.0
 
         # Save row and col
-        format_decomposition(saves)
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
@@ -204,7 +181,6 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
         if np.array_equal(remainder, np.zeros(remainder.shape, dtype=np.float_)): 
             print("DONE")
             # Save row and col
-            format_decomposition(saves)
             saves.rows.append(row_m)
             saves.cols.append(col_n)
             saves.indices.append([m, n])
@@ -230,7 +206,6 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
 
         # Linearly independent
         # Save row and col
-        format_decomposition(saves)
         saves.rows.append(row_m)
         saves.cols.append(col_n)
         saves.indices.append([m, n])
@@ -261,7 +236,6 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
     if temp == num_of_col:
         # We don't take this row
 
-        format_decomposition(saves)
         # Record step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
@@ -289,7 +263,6 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
 
     # We don't take any row or col while permutating
     # Record step
-    format_decomposition(saves)
     permutation_object = Permutation(permutation, [n, temp])
     saves.steps.append(Step(
         saves.steps[-1].number + 1,

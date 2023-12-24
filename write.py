@@ -386,6 +386,19 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
     return
 
 
+# Helper functions
+def format(x): # Replace all -0.0 with 0.0
+    if x == 0.0:
+        return 0.0
+
+    if abs(x) < 1e-16:
+        x = 0.0
+    return x
+
+def vectorized_format(x):
+    return np.vectorize(format)(x)
+
+
 # Main
 def write_pdf(matrix: np.matrix):
     decomposition = Decomposition()
@@ -414,7 +427,25 @@ def write_pdf(matrix: np.matrix):
     ]
     decomposition.U = np.matrix(rows_as_arrays)
 
+    decomposition.L = vectorized_format(decomposition.L)
+    decomposition.U = vectorized_format(decomposition.U)
     for step in decomposition.steps:
+        for i, row in enumerate(decomposition.rows):
+            decomposition.rows[i] = vectorized_format(row)
+        for i, col in enumerate(decomposition.cols):
+            decomposition.cols[i] = vectorized_format(col)
+
+        for step in decomposition.steps:
+            if step.data.mat is not None:
+                step.data.mat = vectorized_format(step.data.mat)
+            if step.data.row is not None:
+                step.data.row = vectorized_format(step.data.row)
+            if step.data.col is not None:
+                step.data.col = vectorized_format(step.data.col)
+            if step.data.CnRm is not None:
+                step.data.CnRm = vectorized_format(step.data.CnRm)
+            if step.data.remainder is not None:
+                step.data.remainder = vectorized_format(step.data.remainder)
         step.view()
 
 
