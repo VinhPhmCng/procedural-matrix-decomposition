@@ -135,22 +135,6 @@ def vectorized_format(x):
 # The decomposition algorithm
 # A = CR
 def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition:
-    # Zero matrix 
-    if not mat.any():
-        # Record step
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_MATRIX,
-            Data(
-                mat=mat, row=None, col=None,
-                CnRm=None, remainder=None, permutation=None,
-                m=m, n=n, element=None,
-                mat_idx = None,
-                remainder_idx = None,
-            )
-        ))
-        return saves # End of recursion
-
     num_of_row = mat.shape[0]
     num_of_col = mat.shape[1]
     col_n = mat[:, n]
