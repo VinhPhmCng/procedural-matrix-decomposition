@@ -72,11 +72,12 @@ def write_answer(doc: Document, decom: Decomposition):
             agn.append(Matrix(decom.cols[i], mtype='b'))
             agn.append('\cdot')
             agn.append(Matrix(decom.rows[i], mtype='b'))
-            #agn.append(r'\\ &+ ')
-            agn.append(r' + ')
+            if i != len(decom.rows) - 1:
+                #agn.append(r'\\ &+ ')
+                agn.append(r' + ')
 
     # Write A = LU
-    doc.append('Another representation is:')
+    doc.append('Another representation is: ')
     doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
 
     if len(decom.permutations) > 0:
@@ -333,7 +334,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 write_col(doc, data)
                 doc.append(Math(
                     data=[
-                        r'\cdot E_{', data.mat_idx, r'} \ ',
+                        r'\cdot I_{', data.mat_idx, r'} \ ',
                     ], 
                     inline=True, 
                     escape=False,
