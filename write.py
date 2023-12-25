@@ -387,9 +387,9 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                     inline=False, 
                     escape=False,
                 ))
-                doc.append('Though either the row ')
+                doc.append('Though neither the row ')
                 write_row(doc, data)
-                doc.append('or the column ')
+                doc.append('nor the column ')
                 write_col(doc, data)
                 doc.append('is a ')
                 doc.append(bold('non-zero vector'))
@@ -509,7 +509,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
 
             case Action.INCREMENT_ROW_AND_RECALL_COL:
                 doc.append('\nHowever, now we have to go back to the old column index ')
-                doc.append('while incrementing our row, in search for the next combination.')
+                doc.append('while incrementing our row, searching for the next combination.')
                 return
 
             case _:
@@ -593,7 +593,7 @@ def write_pdf(matrix: np.matrix):
     doc = Document()
     doc.documentclass = Command(
         'documentclass',
-        options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
+        options=['preview=true', NoEscape(r'border={10pt 10pt 50pt 10pt}')],
         arguments=['standalone'],
     )
     # Incompatible with Streamlit
