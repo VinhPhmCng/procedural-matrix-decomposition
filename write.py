@@ -100,8 +100,8 @@ def write_result_CR(doc: Document, decom: Decomposition, oneline: bool):
 
 
 def write_result_LU(doc: Document, decom: Decomposition):
-    doc.append('The matrix can also be decomposed into two matrices ')
-    doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
+    doc.append('The matrix can also be decomposed into ')
+    #doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
 
     doc.append(Math(
         data=[
