@@ -461,6 +461,7 @@ def write_pdf(matrix: np.matrix):
     pre.rows.clear()
     pre.cols.clear()
     pre.indices.clear()
+    pre.permutations.clear()
 
     pre.steps.append(Step(
         0, State.START,
@@ -506,6 +507,7 @@ def write_pdf(matrix: np.matrix):
         decomposition.rows.clear()
         decomposition.cols.clear()
         decomposition.indices.clear()
+        decomposition.permutations.clear()
         # Get matrix P
         num_of_col = pre.original_matrix.shape[1]
         decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
