@@ -473,6 +473,10 @@ def write_pdf(matrix: np.matrix):
     if len(pre.permutations) == 0:
         decomposition = pre
     else:
+        decomposition.steps.clear()
+        decomposition.rows.clear()
+        decomposition.cols.clear()
+        decomposition.indices.clear()
         # Get matrix P
         num_of_col = pre.original_matrix.shape[1]
         decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
