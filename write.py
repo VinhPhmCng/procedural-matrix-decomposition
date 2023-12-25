@@ -482,6 +482,7 @@ def write_pdf(matrix: np.matrix):
             if temp == i:
                 continue
             else:
+                num_of_col = pre.original_matrix.shape[1]
                 permutation = np.asmatrix(np.zeros((num_of_col, num_of_col), dtype=np.float_), dtype=np.float_)
                 for j in range(num_of_col):
                     if j == i:
