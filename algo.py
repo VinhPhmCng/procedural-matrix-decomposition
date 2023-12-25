@@ -125,12 +125,12 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
 
     if element_mn != 0:
         row_m = row_m / element_mn
-        CnRm = np.dot(col_n, row_m)
+        CnRm = np.matmul(col_n, row_m)
         remainder = mat - CnRm
 
         # If the remainder is a zero matrix
         # -> The matrix has been decomposed
-        if np.array_equal(mat, CnRm): 
+        if not remainder.any(): 
             # Save answer
             saves.rows.append(row_m)
             saves.cols.append(col_n)
@@ -174,7 +174,7 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
                     saves.steps[-1].data.remainder_idx + 1,
                 )
             ))
-            return decom(mat=remainder, m=m + 1, n=save_n, save_n=0, goto_save=False, saves=saves)
+            return decom(mat=remainder, m=m+1, n=save_n, save_n=0, goto_save=False, saves=saves)
         
         # Else (not goto_save)
         saves.steps.append(Step(
@@ -188,14 +188,16 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
                 saves.steps[-1].data.remainder_idx + 1,
             )
         ))
-        return decom(mat=remainder, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+        return decom(mat=remainder, m=m+1, n=n+1, save_n=0, goto_save=False, saves=saves)
 
     # element_mn == 0
     else:
+        CnRm = np.matmul(col_n, row_m)
+        remainder = mat - CnRm
         # If row_m AND col_n are zero-vectors
         if (
-            np.array_equal(row_m, np.zeros((1, num_of_col)))
-            and np.array_equal(col_n, np.zeros((num_of_row, 1)))
+            (not row_m.any()) and 
+            (not col_n.any())
         ):
             saves.steps.append(Step(
                 saves.steps[-1].number + 1,
@@ -203,15 +205,15 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
                 Action.INCREMENT_ROW_COL,
                 Data(
                     mat, row_m, col_n, CnRm, remainder,
-                    m, n, element_mn,
+                    m, n, 0.0,
                     saves.steps[-1].data.remainder_idx,
                     saves.steps[-1].data.remainder_idx,
                 )
             ))
-            return decom(mat=mat, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+            return decom(mat=mat, m=m+1, n=n+1, save_n=0, goto_save=False, saves=saves)
 
         # If only row_m is a zero-vector
-        if np.array_equal(row_m, np.zeros((1, num_of_col))):
+        if not row_m.any():
             saves.steps.append(Step(
                 saves.steps[-1].number + 1,
                 State.ZERO_ROW,
@@ -226,7 +228,7 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
             return decom(mat=mat, m=m + 1, n=n, save_n=0, goto_save=False, saves=saves)
 
         # If only col_n is a zero-vector
-        if np.array_equal(col_n, np.zeros((num_of_row, 1))):
+        if not col_n.any():
             saves.steps.append(Step(
                 saves.steps[-1].number + 1,
                 State.ZERO_COL,
@@ -240,9 +242,10 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
             ))
             return decom(mat=mat, m=m, n=n + 1, save_n=0, goto_save=False, saves=saves)
 
+        # None of the above -> Only element_mn is zero
+
         # A[m][n] = 0
         # Find element A[m][n + a] != 0
-        # If cannot find -> This row is a zero-vector -> Do nothing
         temp = n
         while mat[m, temp] == 0:
             temp += 1
