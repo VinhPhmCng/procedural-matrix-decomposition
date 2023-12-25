@@ -125,7 +125,121 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
 
     if element_mn != 0:
         row_m = row_m / element_mn
+        CnRm = np.dot(col_n, row_m)
+        remainder = mat - CnRm
+
+        # If the remainder is a zero matrix
+        # -> The matrix has been decomposed
+        if np.array_equal(mat, CnRm): 
+            # Save answer
+            saves.rows.append(row_m)
+            saves.cols.append(col_n)
+            saves.indices.append([m, n])
+
+            # Save step
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.END,
+                Action.END,
+                Data(
+                    mat, row_m, col_n, CnRm, remainder,
+                    m, n, element_mn,
+                    saves.steps[-1].data.remainder_idx,
+                    saves.steps[-1].data.remainder_idx + 1,
+                )
+            ))
+            return saves # End of recursion
+        else:
+            # Reaching the last row and column without decomposing the matrix
+            if m == num_of_row - 1 and n == num_of_col - 1: 
+                print("Something went wrong?")
+                return
+
+        # Save answer
+        saves.rows.append(row_m)
+        saves.cols.append(col_n)
+        saves.indices.append([m, n])
+
+        # Continue decomposing
+        if goto_save:
+            # Save step
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.TEMPORARY_SKIPPING_COL,
+                Action.INCREMENT_ROW_AND_RECALL_COL,
+                Data(
+                    mat, row_m, col_n, CnRm, remainder,
+                    m, n, element_mn,
+                    saves.steps[-1].data.remainder_idx,
+                    saves.steps[-1].data.remainder_idx + 1,
+                )
+            ))
+            return decom(mat=remainder, m=m + 1, n=save_n, save_n=0, goto_save=False, saves=saves)
+        
+        # Else (not goto_save)
+        saves.steps.append(Step(
+            saves.steps[-1].number + 1,
+            State.NO_ZERO,
+            Action.INCREMENT_ROW_COL,
+            Data(
+                mat, row_m, col_n, CnRm, remainder,
+                m, n, element_mn,
+                saves.steps[-1].data.remainder_idx,
+                saves.steps[-1].data.remainder_idx + 1,
+            )
+        ))
+        return decom(mat=remainder, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+
+    # element_mn == 0
     else:
+        # If row_m AND col_n are zero-vectors
+        if (
+            np.array_equal(row_m, np.zeros((1, num_of_col)))
+            and np.array_equal(col_n, np.zeros((num_of_row, 1)))
+        ):
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.ZERO_ROW_COL,
+                Action.INCREMENT_ROW_COL,
+                Data(
+                    mat, row_m, col_n, CnRm, remainder,
+                    m, n, element_mn,
+                    saves.steps[-1].data.remainder_idx,
+                    saves.steps[-1].data.remainder_idx,
+                )
+            ))
+            return decom(mat=mat, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+
+        # If only row_m is a zero-vector
+        if np.array_equal(row_m, np.zeros((1, num_of_col))):
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.ZERO_ROW,
+                Action.INCREMENT_ROW,
+                Data(
+                    mat, row_m, col_n, CnRm, remainder,
+                    m, n, element_mn,
+                    saves.steps[-1].data.remainder_idx,
+                    saves.steps[-1].data.remainder_idx,
+                )
+            ))
+            return decom(mat=mat, m=m + 1, n=n, save_n=0, goto_save=False, saves=saves)
+
+        # If only col_n is a zero-vector
+        if np.array_equal(col_n, np.zeros((num_of_row, 1))):
+            saves.steps.append(Step(
+                saves.steps[-1].number + 1,
+                State.ZERO_COL,
+                Action.INCREMENT_COL,
+                Data(
+                    mat, row_m, col_n, CnRm, remainder,
+                    m, n, element_mn,
+                    saves.steps[-1].data.remainder_idx,
+                    saves.steps[-1].data.remainder_idx,
+                )
+            ))
+            return decom(mat=mat, m=m, n=n + 1, save_n=0, goto_save=False, saves=saves)
+
         # A[m][n] = 0
         # Find element A[m][n + a] != 0
         # If cannot find -> This row is a zero-vector -> Do nothing
@@ -140,151 +254,16 @@ def decom(mat: np.matrix, m: int, n: int, save_n: int, goto_save: bool, saves: D
         # instead of Cn and Rm,
         # and remember Cn
         # Afterward, continue with the next row - Cn and R(m + 1)
-        if temp != num_of_col:
-            saves.steps.append(Step(
-                saves.steps[-1].number + 1,
-                State.ZERO_EL,
-                Action.FIND_NONZERO_EL,
-                Data(
-                    mat, row_m, col_n, None, None,
-                    m, n, element_mn,
-                    saves.steps[-1].data.remainder_idx,
-                    saves.steps[-1].data.remainder_idx,
-                )
-            ))
-            return decom(mat=mat, m=m, n=temp, save_n=n, goto_save=True, saves=saves)
-        
-    CnRm = np.dot(col_n, row_m)
-    remainder = mat - CnRm
-
-    # Input zero matrix
-    if not mat.any(): 
-        # Save answer
-        saves.rows.append(row_m)
-        saves.cols.append(col_n)
-        saves.indices.append([m, n])
-
-        # Save step
         saves.steps.append(Step(
             saves.steps[-1].number + 1,
-            State.END,
-            Action.END,
+            State.ZERO_EL,
+            Action.FIND_NONZERO_EL,
             Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
-            )
-        ))
-        return saves # End of recursion
-
-    # If row_m AND col_n are zero-vectors
-    if (
-        np.array_equal(row_m, np.zeros((1, num_of_col)))
-        and np.array_equal(col_n, np.zeros((num_of_row, 1)))
-    ):
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_ROW_COL,
-            Action.INCREMENT_ROW_COL,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
+                mat, row_m, col_n, None, None,
                 m, n, element_mn,
                 saves.steps[-1].data.remainder_idx,
                 saves.steps[-1].data.remainder_idx,
             )
         ))
-        return decom(mat=mat, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
+        return decom(mat=mat, m=m, n=temp, save_n=n, goto_save=True, saves=saves)
 
-    # If only row_m is a zero-vector
-    if np.array_equal(row_m, np.zeros((1, num_of_col))):
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_ROW,
-            Action.INCREMENT_ROW,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx,
-            )
-        ))
-        return decom(mat=mat, m=m + 1, n=n, save_n=0, goto_save=False, saves=saves)
-
-    # If only col_n is a zero-vector
-    if np.array_equal(col_n, np.zeros((num_of_row, 1))):
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.ZERO_COL,
-            Action.INCREMENT_COL,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx,
-            )
-        ))
-        return decom(mat=mat, m=m, n=n + 1, save_n=0, goto_save=False, saves=saves)
-
-
-    # If we reach this point and the remainder is a zero matrix
-    # -> The matrix has been decomposed
-    if np.array_equal(mat, CnRm): 
-        # Save answer
-        saves.rows.append(row_m)
-        saves.cols.append(col_n)
-        saves.indices.append([m, n])
-
-        # Save step
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.END,
-            Action.END,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
-            )
-        ))
-        return saves # End of recursion
-    else:
-        # Reaching the last row and column without decomposing the matrix
-        if m == num_of_row - 1 and n == num_of_col - 1: 
-            print("Something went wrong?")
-            return
-
-    # Save answer
-    saves.rows.append(row_m)
-    saves.cols.append(col_n)
-    saves.indices.append([m, n])
-
-    # Continue decomposing
-    if goto_save:
-        # Save step
-        saves.steps.append(Step(
-            saves.steps[-1].number + 1,
-            State.TEMPORARY_SKIPPING_COL,
-            Action.INCREMENT_ROW_AND_RECALL_COL,
-            Data(
-                mat, row_m, col_n, CnRm, remainder,
-                m, n, element_mn,
-                saves.steps[-1].data.remainder_idx,
-                saves.steps[-1].data.remainder_idx + 1,
-            )
-        ))
-        return decom(mat=remainder, m=m + 1, n=save_n, save_n=0, goto_save=False, saves=saves)
-
-    # Save step
-    saves.steps.append(Step(
-        saves.steps[-1].number + 1,
-        State.NO_ZERO,
-        Action.INCREMENT_ROW_COL,
-        Data(
-            mat, row_m, col_n, CnRm, remainder,
-            m, n, element_mn,
-            saves.steps[-1].data.remainder_idx,
-            saves.steps[-1].data.remainder_idx + 1,
-        )
-    ))
-    return decom(mat=remainder, m=m + 1, n=n + 1, save_n=0, goto_save=False, saves=saves)
