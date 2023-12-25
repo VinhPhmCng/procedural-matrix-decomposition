@@ -1,8 +1,7 @@
 import numpy as np
 from algo import *
 
-from pylatex.base_classes import Environment, Arguments, CommandBase
-from pylatex.base_classes.containers import Container
+from pylatex.base_classes import Environment
 from pylatex.package import Package
 from pylatex import Document, Math, Matrix, Alignat, Command, Section, Subsection
 from pylatex.utils import NoEscape, bold
@@ -101,8 +100,8 @@ def write_result_CR(doc: Document, decom: Decomposition, oneline: bool):
 
 
 def write_result_LU(doc: Document, decom: Decomposition):
-    doc.append('The matrix can also be decomposed into two matrices ')
-    doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
+    doc.append('The matrix can also be decomposed into ')
+    #doc.append(Math(data=[r'A = LU'], inline=True, escape=False))
 
     doc.append(Math(
         data=[
@@ -155,6 +154,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -216,6 +216,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                     agn.append(r'\\ = A_{')
                     agn.append(data.remainder_idx)
                     agn.append(r'} &= ')
+                    #agn.append(Matrix(data.remainder, mtype='b'))
                     agn.append(bNiceMatrix(
                             data.remainder, color='red!15',
                             rows=str(data.m + 1),
@@ -228,6 +229,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -286,6 +288,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                     agn.append(r'\\ = A_{')
                     agn.append(data.remainder_idx)
                     agn.append(r'} &= ')
+                    #agn.append(Matrix(data.remainder, mtype='b'))
                     agn.append(bNiceMatrix(
                             data.remainder, color='red!15',
                             rows=str(data.m + 1),
@@ -304,6 +307,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -327,6 +331,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -349,6 +354,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -371,6 +377,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -380,9 +387,9 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                     inline=False, 
                     escape=False,
                 ))
-                doc.append('Though either the row ')
+                doc.append('Though neither the row ')
                 write_row(doc, data)
-                doc.append('or the column ')
+                doc.append('nor the column ')
                 write_col(doc, data)
                 doc.append('is a ')
                 doc.append(bold('non-zero vector'))
@@ -398,6 +405,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                 doc.append(Math(
                     data=[
                         r'A_{', data.mat_idx, r'} = ',
+                        #Matrix(data.mat, mtype='b'),
                         bNiceMatrix(
                             data.mat, color='red!15',
                             rows=str(data.m + 1),
@@ -453,6 +461,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
                     agn.append(r'\\ = A_{')
                     agn.append(data.remainder_idx)
                     agn.append(r'} &= ')
+                    #agn.append(Matrix(data.remainder, mtype='b'))
                     agn.append(bNiceMatrix(
                             data.remainder, color='red!15',
                             rows=str(data.m + 1),
@@ -500,7 +509,7 @@ def write_detailed_solution(doc: Document, decom: Decomposition):
 
             case Action.INCREMENT_ROW_AND_RECALL_COL:
                 doc.append('\nHowever, now we have to go back to the old column index ')
-                doc.append('while incrementing our row, in search for the next combination.')
+                doc.append('while incrementing our row, searching for the next combination.')
                 return
 
             case _:
@@ -528,32 +537,29 @@ def vectorized_format(x):
     return np.vectorize(format)(x)
 
 
-########### MAIN ############
-# Producing the LaTex PDF
-if __name__ == '__main__':
-    matrix_A = np.matrix([
-        [0, 1, 2, 2, 3],
-        [2, 1, 2, 3, 4],
-        [0, 1, 2, 2, 3],
-        [0, 1, -3, 3, 4],
-        [0, 1, 2, 2, 3],
-    ], dtype=np.float_)
-    
+# Main
+def write_pdf(matrix: np.matrix):
     decomposition = Decomposition()
+    # Maybe these clear()s fixed the bug? (repeating data of previous compositions)
+    decomposition.steps.clear()
+    decomposition.rows.clear()
+    decomposition.cols.clear()
+    decomposition.indices.clear()
+
     decomposition.steps.append(Step(
         0, State.START, Action.START,
         Data(None, None, None, None, None, None, None, None, 0, 0)
     ))
 
-    decomposition = decom(matrix_A, 0, 0, 0, False, Decomposition())
-    decomposition.original_matrix = matrix_A
+    decomposition = decom(matrix, 0, 0, 0, False, decomposition)
+    decomposition.original_matrix = matrix
 
-    # A = LU
+    # A = L
     ## Get matrix L
     cols_as_arrays = [
         col.A1 for col in decomposition.cols
     ]
-    decomposition.L = np.matrix(cols_as_arrays).T # Have to tranpose
+    decomposition.L = np.matrix(cols_as_arrays).T # Tranpose
     ## Get matrix U
     rows_as_arrays = [
         row.A1 for row in decomposition.rows
@@ -587,14 +593,15 @@ if __name__ == '__main__':
     doc = Document()
     doc.documentclass = Command(
         'documentclass',
-        options=['preview=true', NoEscape(r'border={10pt 10pt 300pt 10pt}')],
+        options=['preview=true', NoEscape(r'border={10pt 10pt 50pt 10pt}')],
         arguments=['standalone'],
     )
-    doc.packages.append(Package('nicematrix'))
+    # Incompatible with Streamlit
+    #doc.packages.append(Package('nicematrix')) 
 
     # Write answer
     with doc.create(Section('Answer')):
-        with doc.create(Subsection('Solution 1')):
+        with doc.create(Subsection('Solution')):
             write_result_CR(doc, decomposition, False)
         with doc.create(Subsection('Solution 2')):
             write_result_LU(doc, decomposition)
@@ -605,3 +612,16 @@ if __name__ == '__main__':
 
     # Generate PDF
     doc.generate_pdf('decomposition', clean_tex=False)
+    return
+
+
+if __name__ == '__main__':
+    matrix_A = np.matrix([
+        [1, 2, 1, -2, 2],
+        [2, 4, 1, -4, 1],
+        [3, 6, 3, -6, 3],
+        [4, 9, 5, -8, 1],
+        [3, 6, 7, 6, 4],
+    ], dtype=np.float_)
+
+    write_pdf(matrix_A)
