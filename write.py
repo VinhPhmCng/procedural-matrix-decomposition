@@ -495,6 +495,7 @@ def write_pdf(matrix: np.matrix):
                     permutation[j, j] = 1.0
                 permutation_object = Permutation(permutation, i, temp)
                 pre.permutations.append(permutation_object)
+
         else:
             continue
 
@@ -511,7 +512,7 @@ def write_pdf(matrix: np.matrix):
         # Get matrix P
         num_of_col = pre.original_matrix.shape[1]
         decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
-        for permutation in decomposition.permutations:
+        for permutation in pre.permutations:
             decomposition.P = np.matmul(decomposition.P, permutation.matrix)
         
         AP = np.matmul(matrix, decomposition.P)
