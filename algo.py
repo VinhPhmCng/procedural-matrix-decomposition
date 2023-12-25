@@ -222,10 +222,10 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
         return decom(mat=remainder, m=m+1, n=n+1, saves=saves)
         
     # Else, element_mn == 0.0
-    temp = 1
-    while temp < num_of_col:
+    temp = num_of_col - 1
+    while temp > n:
         if mat[m, temp] == 0.0:
-            temp += 1
+            temp -= 1
         else:
             break
 
