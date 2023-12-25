@@ -230,7 +230,7 @@ def decom(mat: np.matrix, m: int, n: int, saves: Decomposition) -> Decomposition
             break
 
     ### Row m is a zero vector
-    if temp == num_of_col:
+    if temp == n:
         # We don't take this row
 
         # Record step
