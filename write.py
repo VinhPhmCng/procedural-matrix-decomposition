@@ -469,6 +469,34 @@ def write_pdf(matrix: np.matrix):
     pre = decom(matrix, 0, 0, pre)
     pre.original_matrix = matrix
 
+    # Post processing - 
+    for i, col in enumerate(pre.cols):
+        if not col.any(): # Column is zero
+            temp = len(pre.cols) - 1
+            while temp > i:
+                if not pre.cols[temp].any():
+                    temp -= 1
+                else:
+                    break
+
+            if temp == i:
+                continue
+            else:
+                permutation = np.asmatrix(np.zeros((num_of_col, num_of_col), dtype=np.float_), dtype=np.float_)
+                for j in range(num_of_col):
+                    if j == i:
+                        permutation[i, temp] = 1.0
+                        continue
+                    if j == temp:
+                        permutation[temp, i] = 1.0
+                        continue
+                    permutation[j, j] = 1.0
+                permutation_object = Permutation(permutation, i, temp)
+                pre.permutations.append(permutation_object)
+        else:
+            continue
+
+
     decomposition = Decomposition()
     if len(pre.permutations) == 0:
         decomposition = pre
