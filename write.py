@@ -455,25 +455,40 @@ def vectorized_format(x):
 
 # Main
 def write_pdf(matrix: np.matrix):
-    decomposition = Decomposition()
+    pre = Decomposition()
     # Maybe these clear()s fixed the bug? (repeating data of previous compositions)
-    decomposition.steps.clear()
-    decomposition.rows.clear()
-    decomposition.cols.clear()
-    decomposition.indices.clear()
+    pre.steps.clear()
+    pre.rows.clear()
+    pre.cols.clear()
+    pre.indices.clear()
 
-    decomposition.steps.append(Step(
+    pre.steps.append(Step(
         0, State.START,
         Data(None, None, None, None, None, None, None, None, None, 0, 0)
     ))
-    decomposition = decom(matrix, 0, 0, decomposition)
-    decomposition.original_matrix = matrix
+    pre = decom(matrix, 0, 0, pre)
+    pre.original_matrix = matrix
 
-    # Get matrix P
-    num_of_col = decomposition.original_matrix.shape[1]
-    decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
-    for permutation in decomposition.permutations:
-        decomposition.P = np.matmul(decomposition.P, permutation.matrix)
+    decomposition = Decomposition()
+    if len(pre.permutations) == 0:
+        decomposition = pre
+    else:
+        # Get matrix P
+        num_of_col = pre.original_matrix.shape[1]
+        decomposition.P = np.asmatrix(np.eye(num_of_col, num_of_col, dtype=np.float_), dtype=np.float_)
+        for permutation in decomposition.permutations:
+            decomposition.P = np.matmul(decomposition.P, permutation.matrix)
+        
+        AP = np.matmul(matrix, decomposition.P)
+        print(f'{AP=}')
+
+        decomposition.steps.append(Step(
+            0, State.START,
+            Data(None, None, None, None, None, None, None, None, None, 0, 0)
+        ))
+        decomposition = decom(AP, 0, 0, decomposition)
+        decomposition.original_matrix = matrix
+
 
     # A = L
     ## Get matrix L
